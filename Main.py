@@ -5,6 +5,7 @@ import requests
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
 url = "https://api.openweathermap.org/data/2.5/weather"
+search_history = []
 def current_weather():
     city = input("Enter the City: ")
     params = {
@@ -22,6 +23,7 @@ def current_weather():
         return
     sunrise = datetime.fromtimestamp(weather["sys"]["sunrise"])
     sunset = datetime.fromtimestamp(weather["sys"]["sunset"])
+    search_history.append(city)
     print("=" * 40)
     print(f"📍 City         : {weather['name']}")
     print(f"🌡 Temperature   : {weather['main']['temp']:.1f} °C")
@@ -34,16 +36,25 @@ def current_weather():
     print(f"🌅 Sunrise      : {sunrise.strftime('%I:%M %p')}")
     print(f"🌇 Sunset       : {sunset.strftime('%I:%M %p')}")
     print("=" * 40)
-
-
-print("=" * 40)
-print("      WEATHER DASHBOARD")
-print("=" * 40)
-try:
-    choice = int(input("Enter Choice:\n1)Current Weather\n2)Exit\n"))
-    if choice == 1:
-        current_weather()
-    elif choice == 2:
-        pass
-except ValueError:
-    print("Please Enter the Correct Choice!")
+def clear_screen():
+    os.system("cls")
+while True:
+    print("=" * 40)
+    print("      WEATHER DASHBOARD")
+    print("=" * 40)
+    try:
+        choice = int(input("Enter Choice:\n1)Current Weather\n2)Search History\n3)Exit"))
+        if choice == 1:
+            current_weather()
+            input("\nPress Enter to Continue....")
+            clear_screen()
+        elif choice == 2:
+            pass   
+        elif choice == 3:
+            print("Thank you for using Weather Dashboard!")
+           
+            break
+        else:
+            print("Invalid Choice")
+    except ValueError:
+        print("Please Ente a Number!")
