@@ -1,11 +1,15 @@
 from datetime import datetime
+from dotenv import load_dotenv
+import os
 import requests
+load_dotenv()
+API_KEY = os.getenv("API_KEY")
 url = "https://api.openweathermap.org/data/2.5/weather"
 def current_weather():
     city = input("Enter the City: ")
     params = {
         "q" : city,
-        "appid" : "33dced3bffa73140df2617cf05bc0b8a" ,
+        "appid" :  API_KEY, 
         "units" : "metric"
     }
     response = requests.get(url,params = params)
