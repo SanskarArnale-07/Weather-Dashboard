@@ -91,8 +91,17 @@ python Main.py
 ### Current Weather
 
 ![Current Weather](images/Current_Weather.png)
+
+### Search History 
+
 ![Search History](images/Search_History.png)
+
+### 5-Day Forecast
+
 ![5-Day Forecast](images/5-Day_Forecast.png)
+
+### Clear History
+
 ![Clear History](images/Clear_History.png)
 
 ---
