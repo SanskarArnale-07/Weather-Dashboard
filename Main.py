@@ -2,11 +2,13 @@ from datetime import datetime
 from dotenv import load_dotenv
 import os
 import requests
+import json
 search_history = []
+HISTORY_FILE = os.path.join(os.path.dirname(__file__), "history.json")
 load_dotenv()
 API_KEY = os.getenv("API_KEY")
-url = "https://api.openweathermap.org/data/2.5/weather"
-url = "https://api.openweathermap.org/data/2.5/forecast"
+WEATHER_URL = "https://api.openweathermap.org/data/2.5/weather"
+FORECAST_URL = "https://api.openweathermap.org/data/2.5/forecast"
 def current_weather():
     city = input("Enter the City: ")
     params = {
@@ -14,7 +16,7 @@ def current_weather():
         "appid" :  API_KEY, 
         "units" : "metric"
     }
-    response = requests.get(url,params = params)
+    response = requests.get(WEATHER_URL,params = params)
     weather = response.json()
     if response.status_code == 404:
         print("=" * 40)
@@ -26,6 +28,7 @@ def current_weather():
     sunset = datetime.fromtimestamp(weather["sys"]["sunset"])
     if city not in search_history:
         search_history.append(city)
+        save_history()
     print("=" * 40)
     print(f"📍 City         : {weather['name']}")
     print(f"🌡 Temperature   : {weather['main']['temp']:.1f} °C")
@@ -56,7 +59,7 @@ def weather_forecast():
         "appid" :  API_KEY, 
         "units" : "metric"
     }
-    response = requests.get(url,params = params)
+    response = requests.get(FORECAST_URL,params = params)
     forecast = response.json()
     for forecast_data in forecast["list"]:
         if "12:00:00" in forecast_data["dt_txt"]:
@@ -70,7 +73,20 @@ def weather_forecast():
             print(f"🌬  Wind Speed  : {forecast_data['wind']['speed']} m/s")
 def clear_history():
     search_history.clear()
-    print("History Created!")
+    save_history()
+    print("History Cleared!")
+def save_history():
+    with open(HISTORY_FILE, "w") as f:
+        json.dump(search_history, f, indent = 4)
+def load_history():
+    try:
+        with open(HISTORY_FILE, "r") as f:
+            search_history = json.load(f)
+            return search_history
+    except FileNotFoundError:
+        print("No Previous Data Found\nStarting with a New List")
+        return []
+search_history = load_history()
 while True:
     print("=" * 40)
     print("      WEATHER DASHBOARD")
